@@ -1,0 +1,595 @@
+<template>
+  <div class="flex min-h-screen bg-gray-50/50">
+    <!-- Sidebar -->
+    <aside
+      :class="[
+        'fixed top-0 left-0 z-40 h-screen transition-all duration-300 border-r bg-white',
+        sidebarCollapsed ? 'w-16' : 'w-64'
+      ]"
+    >
+      <!-- Logo & Company -->
+      <div class="flex h-16 items-center border-b px-4">
+        <transition name="fade" mode="out-in">
+          <div v-if="!sidebarCollapsed" key="full" class="flex items-center space-x-3">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <div>
+              <h2 class="text-base font-semibold text-gray-900">Learn English</h2>
+              <p class="text-xs text-gray-500">Enterprise</p>
+            </div>
+          </div>
+          <div v-else key="collapsed" class="mx-auto">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+        </transition>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="p-4 border-b">
+        <div class="relative">
+          <a-icon type="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+          <input
+            v-if="!sidebarCollapsed"
+            type="text"
+            placeholder="Search documentation"
+            class="w-full pl-9 pr-16 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent"
+          />
+          <kbd v-if="!sidebarCollapsed" class="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-gray-100 px-1.5 font-mono text-[10px] font-medium text-gray-600">
+            <span>Ctrl</span>K
+          </kbd>
+          <a-icon v-else type="search" class="text-gray-400" />
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 overflow-y-auto py-4">
+        <!-- General -->
+        <div v-if="!sidebarCollapsed" class="px-3 mb-2">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3">General</p>
+        </div>
+        <div class="space-y-1 px-3">
+          <nuxt-link
+            v-for="item in generalMenuItems"
+            :key="item.path"
+            :to="item.path"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+            active-class="bg-gray-100 text-gray-900"
+          >
+            <a-icon :type="item.icon" class="text-base" />
+            <span v-if="!sidebarCollapsed">{{ item.title }}</span>
+            <span v-if="item.badge && !sidebarCollapsed" class="ml-auto rounded-full bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white">
+              {{ item.badge }}
+            </span>
+          </nuxt-link>
+        </div>
+
+        <!-- Apps -->
+        <div v-if="!sidebarCollapsed" class="px-3 mb-2 mt-6">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3">Apps</p>
+        </div>
+        <div class="space-y-1 px-3">
+          <nuxt-link
+            v-for="item in appsMenuItems"
+            :key="item.path"
+            :to="item.path"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+            active-class="bg-gray-100 text-gray-900"
+          >
+            <a-icon :type="item.icon" class="text-base" />
+            <span v-if="!sidebarCollapsed">{{ item.title }}</span>
+            <span v-if="item.new && !sidebarCollapsed" class="ml-auto rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+              New
+            </span>
+          </nuxt-link>
+        </div>
+
+        <!-- Pages -->
+        <div v-if="!sidebarCollapsed" class="px-3 mb-2 mt-6">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3">Pages</p>
+        </div>
+        <div class="space-y-1 px-3">
+          <nuxt-link
+            v-for="item in pagesMenuItems"
+            :key="item.path"
+            :to="item.path"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+            active-class="bg-gray-100 text-gray-900"
+          >
+            <a-icon :type="item.icon" class="text-base" />
+            <span v-if="!sidebarCollapsed">{{ item.title }}</span>
+            <span v-if="item.new && !sidebarCollapsed" class="ml-auto rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+              New
+            </span>
+          </nuxt-link>
+        </div>
+
+        <!-- Components -->
+        <div v-if="!sidebarCollapsed" class="px-3 mb-2 mt-6">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3">Components</p>
+        </div>
+        <div class="space-y-1 px-3">
+          <nuxt-link
+            to="/components"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+            active-class="bg-gray-100 text-gray-900"
+          >
+            <a-icon type="appstore" class="text-base" />
+            <span v-if="!sidebarCollapsed">Components</span>
+          </nuxt-link>
+        </div>
+
+        <!-- Spacer -->
+        <div class="flex-1"></div>
+
+        <!-- Help Links -->
+        <div class="space-y-1 px-3 pb-4">
+          <a
+            href="https://github.com/dianprata/nuxt-shadcn-dashboard"
+            target="_blank"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+          >
+            <a-icon type="question-circle" class="text-base" />
+            <span v-if="!sidebarCollapsed">Help & Support</span>
+          </a>
+          <a
+            href="https://github.com/dianprata/nuxt-shadcn-dashboard"
+            target="_blank"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+          >
+            <a-icon type="message" class="text-base" />
+            <span v-if="!sidebarCollapsed">Feedback</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- User Profile at Bottom -->
+      <div class="border-t">
+        <div class="p-3">
+          <a-dropdown placement="topRight" :trigger="['click']">
+            <div class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-gray-100 cursor-pointer">
+              <a-avatar 
+                src="https://github.com/shadcn.png" 
+                :size="32"
+                class="flex-shrink-0"
+              />
+              <div v-if="!sidebarCollapsed" class="flex-1 overflow-hidden">
+                <p class="text-sm font-medium text-gray-900 truncate">Admin User</p>
+                <p class="text-xs text-gray-500 truncate">admin@learnenglish.com</p>
+              </div>
+              <a-icon v-if="!sidebarCollapsed" type="more" rotate="90" class="text-gray-500" />
+            </div>
+            <a-menu slot="overlay">
+              <a-menu-item key="profile">
+                <a-icon type="user" />
+                <span class="ml-2">Profile</span>
+              </a-menu-item>
+              <a-menu-item key="billing">
+                <a-icon type="credit-card" />
+                <span class="ml-2">Billing</span>
+              </a-menu-item>
+              <a-menu-item key="settings">
+                <a-icon type="setting" />
+                <span class="ml-2">Settings</span>
+              </a-menu-item>
+              <a-menu-divider />
+              <a-menu-item key="logout">
+                <a-icon type="logout" />
+                <span class="ml-2">Log out</span>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div
+      :class="[
+        'flex-1 flex flex-col transition-all duration-300',
+        sidebarCollapsed ? 'ml-16' : 'ml-64'
+      ]"
+    >
+      <!-- Header -->
+      <header class="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-6">
+        <button
+          @click="toggleSidebar"
+          class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+        >
+          <a-icon type="menu" class="text-lg" />
+        </button>
+
+        <div class="flex-1 flex items-center justify-between">
+          <!-- Search -->
+          <div class="w-full max-w-md">
+            <a-input-search
+              placeholder="Search documentation..."
+              size="large"
+              class="rounded-lg"
+            >
+              <a-icon slot="prefix" type="search" class="text-gray-400" />
+              <template slot="suffix">
+                <kbd class="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-gray-100 px-1.5 font-mono text-xs text-gray-600">
+                  <span class="text-xs">Ctrl</span>K
+                </kbd>
+              </template>
+            </a-input-search>
+          </div>
+
+          <!-- Right Section -->
+          <div class="flex items-center gap-2">
+            <a-tooltip title="Notifications">
+              <button class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                <a-badge :count="3" :offset="[-2, 2]">
+                  <a-icon type="bell" class="text-lg" />
+                </a-badge>
+              </button>
+            </a-tooltip>
+
+            <a-tooltip title="Settings">
+              <button class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                <a-icon type="setting" class="text-lg" />
+              </button>
+            </a-tooltip>
+
+            <div class="h-6 w-px bg-gray-200"></div>
+
+            <a-avatar 
+              src="https://github.com/shadcn.png" 
+              :size="32"
+              class="cursor-pointer"
+            />
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="flex-1 p-6">
+        <nuxt />
+      </main>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'AdminLayout',
+  data() {
+    return {
+      sidebarCollapsed: false,
+      generalMenuItems: [
+        { title: 'Home', path: '/dashboard', icon: 'home' },
+        { title: 'Email', path: '/email', icon: 'mail' },
+        { title: 'Tasks', path: '/tasks', icon: 'check-square' }
+      ],
+      appsMenuItems: [
+        { title: 'Kanban Board', path: '/kanban', icon: 'project', new: true },
+        { title: 'Lessons', path: '/lessons', icon: 'book' },
+        { title: 'Vocabulary', path: '/vocabulary', icon: 'font-size' },
+        { title: 'Exercises', path: '/exercises', icon: 'edit' }
+      ],
+      pagesMenuItems: [
+        { title: 'Authentication', path: '/auth', icon: 'lock' },
+        { title: 'Errors', path: '/errors', icon: 'warning' },
+        { title: 'Settings', path: '/settings', icon: 'setting', new: true }
+      ]
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarCollapsed = !this.sidebarCollapsed
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* Fade transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Smooth transitions */
+aside, main {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar */
+nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Keyboard shortcut badge */
+kbd {
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.05);
+}
+</style>
+    <!-- Sidebar -->
+    <aside
+      :class="[
+        'fixed top-0 left-0 z-40 h-screen transition-all duration-300 bg-gradient-to-b from-blue-600 to-blue-800 shadow-2xl',
+        sidebarCollapsed ? 'w-20' : 'w-72'
+      ]"
+    >
+      <!-- Logo -->
+      <div class="flex items-center justify-center h-20 border-b border-blue-500/30 px-4">
+        <transition name="fade" mode="out-in">
+          <div v-if="!sidebarCollapsed" key="full" class="text-center">
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">
+              Learn English
+            </h1>
+            <p class="text-xs text-blue-200 mt-1">Admin Panel</p>
+          </div>
+          <div v-else key="collapsed" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm">
+            <span class="text-2xl font-bold text-white">LE</span>
+          </div>
+        </transition>
+      </div>
+
+      <!-- Menu -->
+      <nav class="p-4 space-y-1 mt-2">
+        <nuxt-link
+          v-for="item in menuItems"
+          :key="item.path"
+          :to="item.path"
+          class="group flex items-center px-4 py-3.5 text-blue-100 rounded-xl hover:bg-white/20 transition-all duration-200 relative overflow-hidden backdrop-blur-sm"
+          active-class="bg-white/25 text-white shadow-lg"
+        >
+          <div class="absolute inset-0 bg-gradient-to-r from-white/0 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div :class="['relative z-10 w-6 h-6 flex items-center justify-center', !sidebarCollapsed && 'mr-4']">
+            <a-icon :type="item.icon" class="text-xl" />
+          </div>
+          <transition name="slide-fade">
+            <span v-if="!sidebarCollapsed" class="relative z-10 font-medium">{{ item.title }}</span>
+          </transition>
+          <div v-if="item.badge" class="ml-auto">
+            <span class="px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full">{{ item.badge }}</span>
+          </div>
+        </nuxt-link>
+      </nav>
+
+      <!-- User Profile in Sidebar -->
+      <div v-if="!sidebarCollapsed" class="absolute bottom-0 left-0 right-0 p-4 border-t border-blue-500/30">
+        <div class="flex items-center space-x-3 p-3 rounded-xl bg-white/10 backdrop-blur-sm">
+          <a-avatar size="large" icon="user" class="bg-white/20" />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-white truncate">Admin User</p>
+            <p class="text-xs text-blue-200 truncate">admin@learnenglish.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div
+      :class="[
+        'transition-all duration-300 min-h-screen',
+        sidebarCollapsed ? 'ml-20' : 'ml-72'
+      ]"
+    >
+      <!-- Header -->
+      <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
+        <div class="flex items-center justify-between h-20 px-8">
+          <!-- Left Section -->
+          <div class="flex items-center space-x-4">
+            <!-- Toggle Button -->
+            <button
+              @click="toggleSidebar"
+              class="p-3 text-gray-600 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group"
+            >
+              <a-icon :type="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'" class="text-xl group-hover:scale-110 transition-transform" />
+            </button>
+            
+            <!-- Search Bar -->
+            <div class="hidden md:block">
+              <a-input-search
+                placeholder="Tìm kiếm..."
+                class="w-80"
+                size="large"
+              >
+                <a-icon slot="prefix" type="search" class="text-gray-400" />
+              </a-input-search>
+            </div>
+          </div>
+
+          <!-- Right Section -->
+          <div class="flex items-center space-x-6">
+            <!-- Quick Actions -->
+            <a-tooltip title="Làm mới" placement="bottom">
+              <button class="p-3 text-gray-600 rounded-xl hover:bg-gray-100 hover:text-blue-600 transition-all">
+                <a-icon type="reload" class="text-xl" />
+              </button>
+            </a-tooltip>
+
+            <!-- Notifications -->
+            <a-badge :count="5" :offset="[-5, 5]">
+              <button class="p-3 text-gray-600 rounded-xl hover:bg-gray-100 hover:text-blue-600 transition-all relative">
+                <a-icon type="bell" class="text-xl" />
+              </button>
+            </a-badge>
+
+            <!-- Messages -->
+            <a-badge :count="3" :offset="[-5, 5]">
+              <button class="p-3 text-gray-600 rounded-xl hover:bg-gray-100 hover:text-blue-600 transition-all">
+                <a-icon type="message" class="text-xl" />
+              </button>
+            </a-badge>
+
+            <!-- Divider -->
+            <div class="h-8 w-px bg-gray-200"></div>
+
+            <!-- User Menu -->
+            <a-dropdown placement="bottomRight">
+              <div class="flex items-center space-x-3 cursor-pointer px-3 py-2 rounded-xl hover:bg-gray-100 transition-all group">
+                <a-avatar size="large" icon="user" class="bg-gradient-to-br from-blue-500 to-blue-700" />
+                <div class="hidden lg:block text-left">
+                  <p class="text-sm font-semibold text-gray-800">Admin User</p>
+                  <p class="text-xs text-gray-500">Quản trị viên</p>
+                </div>
+                <a-icon type="down" class="text-xs text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              <a-menu slot="overlay" class="mt-2 w-56">
+                <a-menu-item key="profile" class="hover:bg-blue-50">
+                  <a-icon type="user" class="text-blue-600" />
+                  <span class="ml-2">Hồ sơ cá nhân</span>
+                </a-menu-item>
+                <a-menu-item key="settings" class="hover:bg-blue-50">
+                  <a-icon type="setting" class="text-blue-600" />
+                  <span class="ml-2">Cài đặt</span>
+                </a-menu-item>
+                <a-menu-item key="help" class="hover:bg-blue-50">
+                  <a-icon type="question-circle" class="text-blue-600" />
+                  <span class="ml-2">Trợ giúp</span>
+                </a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="logout" class="hover:bg-red-50 text-red-600">
+                  <a-icon type="logout" class="text-red-600" />
+                  <span class="ml-2">Đăng xuất</span>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="p-8">
+        <!-- Breadcrumb -->
+        <div class="mb-6">
+          <a-breadcrumb>
+            <a-breadcrumb-item>
+              <a-icon type="home" />
+              <span class="ml-1">Trang chủ</span>
+            </a-breadcrumb-item>
+            <a-breadcrumb-item>Dashboard</a-breadcrumb-item>
+          </a-breadcrumb>
+        </div>
+
+        <!-- Content -->
+        <div class="animate-fadeIn">
+          <nuxt />
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-6 px-8 mt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
+          <p>© 2025 Learn English Admin. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="hover:text-blue-600 transition-colors">Về chúng tôi</a>
+            <span class="text-gray-300">|</span>
+            <a href="#" class="hover:text-blue-600 transition-colors">Hỗ trợ</a>
+            <span class="text-gray-300">|</span>
+            <a href="#" class="hover:text-blue-600 transition-colors">Điều khoản</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'AdminLayout',
+  data() {
+    return {
+      sidebarCollapsed: false,
+      menuItems: [
+        { title: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
+        { title: 'Người dùng', path: '/users', icon: 'team', badge: '12' },
+        { title: 'Bài học', path: '/lessons', icon: 'book' },
+        { title: 'Từ vựng', path: '/vocabulary', icon: 'font-size' },
+        { title: 'Bài tập', path: '/exercises', icon: 'edit' },
+        { title: 'Báo cáo', path: '/reports', icon: 'bar-chart' },
+        { title: 'Cài đặt', path: '/settings', icon: 'setting' },
+      ]
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarCollapsed = !this.sidebarCollapsed
+    }
+  }
+}
+</script>
+
+<style scoped>
+/* Smooth transitions */
+aside, main {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Slide fade transition */
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+/* Animate fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Custom scrollbar for sidebar */
+aside::-webkit-scrollbar {
+  width: 6px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+</style>
