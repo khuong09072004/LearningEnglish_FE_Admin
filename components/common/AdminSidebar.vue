@@ -99,12 +99,21 @@
         </nuxt-link>
 
         <nuxt-link
+          to="/Conversation"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+          active-class="bg-gray-100 text-gray-900"
+        >
+          <a-icon type="message" class="text-base" />
+          <span v-if="!collapsed"> Quản lí hội thoại</span>
+        </nuxt-link>
+
+        <nuxt-link
           to="/vocabulary"
           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
           active-class="bg-gray-100 text-gray-900"
         >
           <a-icon type="font-size" class="text-base" />
-          <span v-if="!collapsed">Từ vựng</span>
+          <span v-if="!collapsed">Quản lí từ vựng</span>
         </nuxt-link>
 
         <nuxt-link
@@ -113,7 +122,7 @@
           active-class="bg-gray-100 text-gray-900"
         >
           <a-icon type="read" class="text-base" />
-          <span v-if="!collapsed">Ngữ pháp</span>
+          <span v-if="!collapsed"> Quản lí ngữ pháp</span>
         </nuxt-link>
 
         <nuxt-link
@@ -122,7 +131,7 @@
           active-class="bg-gray-100 text-gray-900"
         >
           <a-icon type="edit" class="text-base" />
-          <span v-if="!collapsed">Bài tập</span>
+          <span v-if="!collapsed"> Quản lí bài tập</span>
         </nuxt-link>
       </div>
 
@@ -141,7 +150,7 @@
           active-class="bg-gray-100 text-gray-900"
         >
           <a-icon type="message" class="text-base" />
-          <span v-if="!collapsed">Liên hệ</span>
+          <span v-if="!collapsed"> Quản lí liên hệ</span>
         </nuxt-link>
       </div>
 
