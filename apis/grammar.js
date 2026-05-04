@@ -1,7 +1,18 @@
 import axios from "axios";
 
-export function getListLevel() {
-  const url = "/admin/levels";
+export function getListGrammar(levelId) {
+  const url = "/admin/grammar";
+  const config = levelId ? { params: { levelId } } : undefined;
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, config)
+      .then((response) => resolve(response.data))
+      .catch((error) => reject(error));
+  });
+}
+
+export function getGrammarById(id) {
+  const url = `/admin/grammar/${id}`;
   return new Promise((resolve, reject) => {
     axios
       .get(url)
@@ -10,18 +21,8 @@ export function getListLevel() {
   });
 }
 
-export function getLevelById(id) {
-  const url = `/admin/levels/${id}`;
-  return new Promise((resolve, reject) => {
-    axios
-      .get(url)
-      .then((response) => resolve(response.data))
-      .catch((error) => reject(error));
-  });
-}
-
-export function createLevel(body) {
-  const url = "/admin/levels";
+export function createGrammar(body) {
+  const url = "/admin/grammar";
   return new Promise((resolve, reject) => {
     axios
       .post(url, body)
@@ -30,8 +31,8 @@ export function createLevel(body) {
   });
 }
 
-export function updateLevel(id, body) {
-  const url = `/admin/levels/${id}`;
+export function updateGrammar(id, body) {
+  const url = `/admin/grammar/${id}`;
   return new Promise((resolve, reject) => {
     axios
       .put(url, body)
@@ -40,8 +41,8 @@ export function updateLevel(id, body) {
   });
 }
 
-export function deleteLevel(id) {
-  const url = `/admin/levels/${id}`;
+export function deleteGrammar(id) {
+  const url = `/admin/grammar/${id}`;
   return new Promise((resolve, reject) => {
     axios
       .delete(url)
