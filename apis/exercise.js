@@ -1,22 +1,5 @@
 import axios from "axios";
 
-function createExerciseFormData(req, audioFile) {
-	const formData = new FormData();
-
-	if (req !== undefined && req !== null) {
-		const reqBlob = new Blob([JSON.stringify(req)], {
-			type: "application/json",
-		});
-		formData.append("req", reqBlob);
-	}
-
-	if (audioFile) {
-		formData.append("audioFile", audioFile);
-	}
-
-	return formData;
-}
-
 export function getExercises(topicId) {
 	const url = "/admin/exercises";
 	const config = topicId ? { params: { topicId } } : undefined;
@@ -41,13 +24,28 @@ export function getExerciseById(id) {
 
 export function createExercise(body) {
 	const url = "/admin/exercises";
-	const formData = createExerciseFormData(body?.req, body?.audioFile);
+
+	// Các field đi vào query params
+	const params = {
+		topicId: body?.topicId,
+		title: body?.title,
+		type: body?.type,
+		duration: body?.duration,
+		category: body?.category,
+	};
+
+	// audioFile đi vào multipart/form-data
+	const formData = new FormData();
+	if (body?.audioFile) {
+		formData.append("audioFile", body.audioFile);
+	}
 
 	return new Promise((resolve, reject) => {
 		axios
 			.post(url, formData, {
-			headers: { "Content-Type": "multipart/form-data" },
-		})
+				params,
+				headers: { "Content-Type": "multipart/form-data" },
+			})
 			.then((response) => resolve(response.data))
 			.catch((error) => reject(error));
 	});
@@ -55,13 +53,26 @@ export function createExercise(body) {
 
 export function updateExercise(id, body) {
 	const url = `/admin/exercises/${id}`;
-	const formData = createExerciseFormData(body?.req, body?.audioFile);
+
+	const params = {
+		topicId: body?.topicId,
+		title: body?.title,
+		type: body?.type,
+		duration: body?.duration,
+		category: body?.category,
+	};
+
+	const formData = new FormData();
+	if (body?.audioFile) {
+		formData.append("audioFile", body.audioFile);
+	}
 
 	return new Promise((resolve, reject) => {
 		axios
 			.put(url, formData, {
-			headers: { "Content-Type": "multipart/form-data" },
-		})
+				params,
+				headers: { "Content-Type": "multipart/form-data" },
+			})
 			.then((response) => resolve(response.data))
 			.catch((error) => reject(error));
 	});
