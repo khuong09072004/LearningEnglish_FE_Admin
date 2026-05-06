@@ -8,8 +8,7 @@
         </p>
       </div>
       <div class="flex items-center gap-2">
-       
-        <a-button type="primary" icon="plus" @click="openCreateExerciseModal"
+        <a-button type="primary"  @click="openCreateExerciseModal"
           >Thêm bài tập</a-button
         >
       </div>
@@ -126,6 +125,14 @@ export default {
       if (Array.isArray(res?.data)) return res.data;
       if (Array.isArray(res?.result)) return res.result;
       if (Array.isArray(res?.data?.data)) return res.data.data;
+
+      // Tự động tìm field đầu tiên là array trong res.data
+      if (res?.data && typeof res.data === "object") {
+        const arrayField = Object.values(res.data).find((v) =>
+          Array.isArray(v)
+        );
+        if (arrayField) return arrayField;
+      }
       return [];
     },
 
@@ -166,6 +173,19 @@ export default {
         description: item?.description || item?.content || "",
         topicId: item?.topicId || item?.topic?.id || item?.topic_id,
         topicName: item?.topicName || item?.topic?.name || "",
+        passageId:
+          item?.passageId ||
+          item?.passingId ||
+          item?.passedId ||
+          item?.passage_id ||
+          item?.passage?.id ||
+          item?.passage?.passageId ||
+          item?.passage?.passingId ||
+          item?.passage?.passedId ||
+          item?.question?.passage_id ||
+          item?.question?.passageId ||
+          item?.question?.passingId ||
+          item?.question?.passedId,
         raw: item,
       };
     },
@@ -282,12 +302,21 @@ export default {
     async handleExerciseSubmit({ id, params }) {
       this.exerciseSubmitLoading = true;
       try {
+        const normalizedPassageId =
+          params.passageId === undefined || params.passageId === null || params.passageId === ""
+            ? null
+            : Number.isNaN(Number(params.passageId))
+              ? params.passageId
+              : Number(params.passageId);
+
         const payload = {
           topicId: params.topicId,
           title: params.title,
           type: params.type,
           duration: params.duration,
           category: params.category,
+          passageId: normalizedPassageId,
+          passedId: normalizedPassageId,
           audioFile: this.audioFile, // null nếu không phải LISTENING
         };
 

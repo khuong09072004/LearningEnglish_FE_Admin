@@ -32,6 +32,9 @@ export function createExercise(body) {
 		type: body?.type,
 		duration: body?.duration,
 		category: body?.category,
+		passageId: body?.passageId ?? body?.passingId ?? body?.passedId,
+		passingId: body?.passingId ?? body?.passageId ?? body?.passedId,
+		passedId: body?.passedId ?? body?.passageId ?? body?.passingId,
 	};
 
 	// audioFile đi vào multipart/form-data
@@ -60,6 +63,9 @@ export function updateExercise(id, body) {
 		type: body?.type,
 		duration: body?.duration,
 		category: body?.category,
+		passageId: body?.passageId ?? body?.passingId ?? body?.passedId,
+		passingId: body?.passingId ?? body?.passageId ?? body?.passedId,
+		passedId: body?.passedId ?? body?.passageId ?? body?.passingId,
 	};
 
 	const formData = new FormData();
@@ -93,6 +99,16 @@ export function getExerciseItemById(id) {
 	return new Promise((resolve, reject) => {
 		axios
 			.get(url)
+			.then((response) => resolve(response.data))
+			.catch((error) => reject(error));
+	});
+}
+
+export function createExerciseItem(body) {
+	const url = "/exercise-items";
+	return new Promise((resolve, reject) => {
+		axios
+			.post(url, body)
 			.then((response) => resolve(response.data))
 			.catch((error) => reject(error));
 	});
