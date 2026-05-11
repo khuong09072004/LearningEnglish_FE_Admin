@@ -158,7 +158,7 @@
           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
           active-class="bg-gray-100 text-gray-900"
         >
-          <a-icon type="message" class="text-base" />
+          <a-icon type="mail" class="text-base" />
           <span v-if="!collapsed"> Quản lí liên hệ</span>
         </nuxt-link>
       </div>

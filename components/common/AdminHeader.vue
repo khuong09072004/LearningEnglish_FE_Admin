@@ -26,7 +26,6 @@
 
       <!-- Right Section -->
       <div class="flex items-center gap-2">
-        
 
         <div class="h-6 w-px bg-gray-200"></div>
 
