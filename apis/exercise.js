@@ -114,6 +114,16 @@ export function createExerciseItem(body) {
 	});
 }
 
+export function createBulkExerciseItems(body) {
+	const url = "/api/exercise-items/bulk";
+	return new Promise((resolve, reject) => {
+		axios
+			.post(url, body)
+			.then((response) => resolve(response.data))
+			.catch((error) => reject(error));
+	});
+}
+
 export function updateExerciseItem(id, body) {
 	const url = `/exercise-items/${id}`;
 	return new Promise((resolve, reject) => {

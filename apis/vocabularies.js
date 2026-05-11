@@ -1,13 +1,20 @@
 import axios from "axios";
 
-function createVocabularyFormData(req, imageFile) {
+function createVocabularyFormData(req, imageFile, vocabId) {
 	const formData = new FormData();
 
 	if (req !== undefined && req !== null) {
-		const reqBlob = new Blob([JSON.stringify(req)], {
-			type: "application/json",
-		});
-		formData.append("req", reqBlob);
+		if (req.word !== undefined) formData.append("word", req.word);
+		if (req.meaning !== undefined) formData.append("meaning", req.meaning);
+		// backend expects field name 'phonetic'
+		if (req.pronunciation !== undefined) formData.append("phonetic", req.pronunciation);
+		// map example -> description if backend expects description
+		if (req.example !== undefined) formData.append("description", req.example);
+		if (req.topicId !== undefined) formData.append("topicId", req.topicId);
+	}
+
+	if (vocabId !== undefined && vocabId !== null) {
+		formData.append("vocabId", vocabId);
 	}
 
 	if (imageFile) {
@@ -55,7 +62,8 @@ export function createVocabulary(body) {
 
 export function updateVocabulary(vocabId, body) {
 	const url = `/admin/vocabularies/${vocabId}`;
-	const formData = createVocabularyFormData(body?.req, body?.imageFile);
+	// include vocabId also inside form data in case backend expects it as a field
+	const formData = createVocabularyFormData(body?.req, body?.imageFile, vocabId);
 
 	return new Promise((resolve, reject) => {
 		axios

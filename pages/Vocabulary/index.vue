@@ -284,7 +284,8 @@ export default {
 				example: item?.example || item?.exampleSentence || "",
 				topicId: matchedTopic?.id || item?.topicId || item?.topic_id || nestedTopic?.id,
 				topicName: matchedTopic?.name || nestedTopic?.name || item?.topicName || "",
-				imageUrl: item?.imageUrl || item?.image || item?.thumbnail || "",
+				imageUrl:
+					item?.imageUrl || item?.image || item?.thumbnail || item?.image_url || "",
 			};
 		},
 
