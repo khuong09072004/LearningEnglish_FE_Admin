@@ -26,19 +26,7 @@
 
       <!-- Right Section -->
       <div class="flex items-center gap-2">
-        <a-tooltip title="Notifications">
-          <button class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">
-            <a-badge :count="3" :offset="[-2, 2]">
-              <a-icon type="bell" class="text-lg" />
-            </a-badge>
-          </button>
-        </a-tooltip>
-
-        <a-tooltip title="Settings">
-          <button class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">
-            <a-icon type="setting" class="text-lg" />
-          </button>
-        </a-tooltip>
+        
 
         <div class="h-6 w-px bg-gray-200"></div>
 
