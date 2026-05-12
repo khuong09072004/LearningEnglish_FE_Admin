@@ -21,7 +21,7 @@
 
     <div v-else>
       <!-- Stats Cards - Main Content -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <!-- Users Stats -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all cursor-pointer" @click="$router.push('/Users')">
           <div class="flex items-start justify-between mb-4">
@@ -52,20 +52,6 @@
             </div>
           </div>
           <p class="text-xs text-gray-600">Cần xử lý</p>
-        </div>
-
-        <!-- Pending Users -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all cursor-pointer" @click="$router.push('/Users')">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Chờ kích hoạt</p>
-              <h3 class="text-3xl font-bold text-gray-900">{{ dashboardData.pendingUsers || 0 }}</h3>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center">
-              <a-icon type="clock-circle" class="text-2xl text-yellow-600" />
-            </div>
-          </div>
-          <p class="text-xs text-gray-600">Chờ xác nhận</p>
         </div>
 
         <!-- Admin Users -->

@@ -25,6 +25,7 @@
       :mode="lessonModalMode"
       :initial="lessonForm"
       :loading="submitLoading"
+      :level-options="levelOptions"
       @save="saveLessonFromModal"
       @close="lessonModalVisible = false"
     />
@@ -53,6 +54,7 @@ import {
   updateStep,
   deleteStep,
 } from "@/apis/conversation";
+import { getListLevel } from "@/apis/levels";
 
 import LessonTable from '@/components/conversation/LessonTable.vue';
 import LessonFormModal from '@/components/conversation/LessonFormModal.vue';
@@ -89,7 +91,9 @@ export default {
       searchKeyword: "",
       loading: false,
       lessonsLoading: false,
+      levelsLoading: false,
       submitLoading: false,
+      levelOptions: [],
 
       tableColumns: [
         { title: "ID", dataIndex: "id", key: "id", width: 60 },
@@ -128,6 +132,7 @@ export default {
   },
 
   created() {
+    this.fetchLevels();
     this.fetchLessons();
   },
 
@@ -156,6 +161,35 @@ export default {
   },
 
   methods: {
+    extractListData(res) {
+      if (Array.isArray(res)) return res;
+      if (Array.isArray(res?.data)) return res.data;
+      if (Array.isArray(res?.result)) return res.result;
+      if (Array.isArray(res?.data?.data)) return res.data.data;
+      return [];
+    },
+
+    normalizeLevel(item) {
+      return {
+        id: item?.id,
+        code: item?.code || "",
+        name: item?.name || item?.levelName || item?.code || "",
+      };
+    },
+
+    async fetchLevels() {
+      this.levelsLoading = true;
+      try {
+        const res = await getListLevel();
+        const levels = this.extractListData(res).map((item) => this.normalizeLevel(item));
+        this.levelOptions = levels.filter((item) => item.id !== undefined && item.id !== null);
+      } catch (error) {
+        this.$message.error("Không thể tải danh sách cấp độ");
+      } finally {
+        this.levelsLoading = false;
+      }
+    },
+
     async fetchLessons() {
       this.lessonsLoading = true;
       try {

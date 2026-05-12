@@ -242,17 +242,15 @@ export default {
 		},
 
 		async handleSubmit() {
-			if (!this.form.title || !this.form.content) {
+			const title = String(this.form.title || "").trim();
+			const content = String(this.form.content || "").trim();
+
+			if (!title || !content) {
 				this.$message.warning("Vui lòng nhập đầy đủ tiêu đề và nội dung passage.");
 				return;
 			}
 
-			const payload = {
-				title: this.form.title.trim(),
-				content: this.form.content.trim(),
-				passage: this.form.content.trim(),
-				text: this.form.content.trim(),
-			};
+			const payload = { title, content };
 
 			this.submitLoading = true;
 			try {

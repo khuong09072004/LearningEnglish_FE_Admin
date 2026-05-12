@@ -93,9 +93,7 @@
 					{{ selectedUser.name || selectedUser.fullName || selectedUser.username || "-" }}
 				</a-descriptions-item>
 				<a-descriptions-item label="Email">{{ selectedUser.email || "-" }}</a-descriptions-item>
-				<a-descriptions-item label="Số điện thoại">
-					{{ selectedUser.phone || selectedUser.phoneNumber || "-" }}
-				</a-descriptions-item>
+				
 				<a-descriptions-item label="Vai trò">
 					{{ selectedUser.role || "USER" }}
 				</a-descriptions-item>

@@ -14,8 +14,12 @@
       <a-form-model-item label="Mô tả">
         <a-textarea v-model="localForm.description" :rows="3" placeholder="Nhập mô tả" />
       </a-form-model-item>
-      <a-form-model-item label="Level ID">
-        <a-input-number v-model="localForm.levelId" style="width: 100%" />
+      <a-form-model-item label="Cấp độ">
+        <a-select v-model="localForm.levelId" placeholder="Chọn cấp độ">
+          <a-select-option v-for="item in levelOptions" :key="item.id" :value="item.id">
+            {{ item.name || item.code || ('Level ' + item.id) }}
+          </a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="Goal">
         <a-textarea v-model="localForm.goal" :rows="2" placeholder="Nhập goal" />
@@ -35,6 +39,7 @@ export default {
     mode: { type: String, default: 'create' },
     initial: { type: Object, default: () => ({}) },
     loading: { type: Boolean, default: false },
+    levelOptions: { type: Array, default: () => [] },
   },
   data() {
     return {
@@ -63,7 +68,24 @@ export default {
   },
   methods: {
     onOk() {
-      this.$emit('save', this.localForm);
+      const title = String(this.localForm.title || '').trim();
+      const description = String(this.localForm.description || '').trim();
+      const goal = String(this.localForm.goal || '').trim();
+      const systemPrompt = String(this.localForm.systemPrompt || '').trim();
+      const levelId = this.localForm.levelId;
+
+      if (!title || !description || !levelId || !goal || !systemPrompt) {
+        this.$message.warning('Vui lòng nhập đầy đủ tất cả các trường.');
+        return;
+      }
+
+      this.$emit('save', {
+        ...this.localForm,
+        title,
+        description,
+        goal,
+        systemPrompt,
+      });
     },
   },
 };

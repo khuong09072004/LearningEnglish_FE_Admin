@@ -20,15 +20,16 @@
       </template>
 
       <template slot="action" slot-scope="text, record">
+        <a-tooltip title="Xem steps">
+          <a-button size="small" type="link" icon="eye" @click="$emit('view-steps', record)" class="action-btn action-view" />
+        </a-tooltip>
         <a-tooltip title="Sửa">
           <a-button size="small" type="link" icon="edit" @click="$emit('edit', record)" class="action-btn action-edit" />
         </a-tooltip>
         <a-tooltip title="Xóa">
           <a-button size="small" type="link" icon="delete" @click="$emit('delete', record)" class="action-btn action-delete" />
         </a-tooltip>
-        <a-tooltip title="Xem steps">
-          <a-button size="small" type="link" icon="eye" @click="$emit('view-steps', record)" class="action-btn action-view" />
-        </a-tooltip>
+        
       </template>
     </a-table>
   </a-card>

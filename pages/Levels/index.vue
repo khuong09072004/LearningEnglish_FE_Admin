@@ -262,7 +262,7 @@ export default {
         C1: "purple",
         C2: "magenta",
       };
-      return colorMap[code] || "default";
+      return colorMap[code] || "black";
     },
 
     formatDate(dateStr) {
